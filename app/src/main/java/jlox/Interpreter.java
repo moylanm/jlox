@@ -1,11 +1,14 @@
 package jlox;
 
+import java.util.List;
+
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-    void interpret(Expr expression) {
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
@@ -75,6 +78,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private Object evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
     }
 
     @Override
